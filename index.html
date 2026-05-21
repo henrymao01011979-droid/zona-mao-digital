@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Zona Mao Digital</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --black:    #0a0a0a;
+      --dark:     #111111;
+      --gray-900: #1a1a1a;
+      --gray-700: #2e2e2e;
+      --gray-500: #6b6b6b;
+      --gray-300: #a3a3a3;
+      --gray-100: #e5e5e5;
+      --white:    #f5f5f5;
+      --orange:   #f75b00;
+      --orange-h: #ff7a2e;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--black);
+      color: var(--white);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ── SCROLLBAR ─────────────────────────────── */
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: var(--black); }
+    ::-webkit-scrollbar-thumb { background: var(--orange); border-radius: 2px; }
+
+    /* ── NAV ────────────────────────────────────── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.4rem 6vw;
+      background: rgba(10,10,10,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+    }
+
+    .nav-logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.5rem;
+      letter-spacing: 0.12em;
+      color: var(--white);
+      text-decoration: none;
+    }
+    .nav-logo span { color: var(--orange); }
+
+    .nav-links {
+      display: flex;
+      gap: 2.4rem;
+      list-style: none;
+    }
+    .nav-links a {
+      text-decoration: none;
+      font-size: 0.8rem;
+      font-weight: 400;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--gray-300);
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--orange); }
+
+    /* ── HERO ───────────────────────────────────── */
+    #hero {
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 10rem 6vw 6rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Grid overlay */
+    #hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(247,91,0,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(247,91,0,0.04) 1px, transparent 1px);
+      background-size: 60px 60px;
+      mask-image: radial-gradient(ellipse 70% 70% at 50% 50%, black 30%, transparent 100%);
+    }
+
+    /* Glow blob */
+    #hero::after {
+      content: '';
+      position: absolute;
+      width: 520px; height: 520px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(247,91,0,0.12) 0%, transparent 70%);
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      animation: pulse 6s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.6; transform: translate(-50%, -50%) scale(1); }
+      50%       { opacity: 1;   transform: translate(-50%, -50%) scale(1.12); }
+    }
+
+    .hero-inner {
+      position: relative;
+      z-index: 1;
+      max-width: 860px;
+      text-align: center;
+    }
+
+    .hero-tag {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--orange);
+      border: 1px solid rgba(247,91,0,0.35);
+      padding: 0.35rem 1rem;
+      border-radius: 2px;
+      margin-bottom: 2rem;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.2s forwards;
+    }
+
+    h1 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(3.4rem, 9vw, 8rem);
+      line-height: 0.95;
+      letter-spacing: 0.04em;
+      margin-bottom: 1.6rem;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.4s forwards;
+    }
+    h1 .accent { color: var(--orange); }
+
+    .hero-sub {
+      font-size: clamp(0.95rem, 2vw, 1.1rem);
+      color: var(--gray-300);
+      max-width: 520px;
+      margin: 0 auto 2.8rem;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.6s forwards;
+    }
+
+    .hero-ctas {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.8s forwards;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── BUTTONS ────────────────────────────────── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.85rem 2rem;
+      border-radius: 2px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.82rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.22s ease;
+      border: none;
+    }
+    .btn-primary {
+      background: var(--orange);
+      color: #fff;
+    }
+    .btn-primary:hover {
+      background: var(--orange-h);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(247,91,0,0.35);
+    }
+    .btn-ghost {
+      background: transparent;
+      color: var(--gray-300);
+      border: 1px solid var(--gray-700);
+    }
+    .btn-ghost:hover {
+      border-color: var(--gray-300);
+      color: var(--white);
+      transform: translateY(-2px);
+    }
+
+    /* ── SECTION SHARED ─────────────────────────── */
+    section { padding: 7rem 6vw; }
+
+    .section-label {
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--orange);
+      margin-bottom: 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+    }
+    .section-label::before {
+      content: '';
+      display: block;
+      width: 28px; height: 1px;
+      background: var(--orange);
+    }
+
+    h2 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(2.2rem, 5vw, 3.8rem);
+      letter-spacing: 0.06em;
+      line-height: 1;
+      margin-bottom: 1.2rem;
+    }
+
+    .section-desc {
+      color: var(--gray-300);
+      max-width: 520px;
+      font-size: 1rem;
+    }
+
+    /* ── SERVICES ───────────────────────────────── */
+    #servicios { background: var(--dark); }
+
+    .services-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      flex-wrap: wrap;
+      gap: 2rem;
+      margin-bottom: 4rem;
+    }
+
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1px;
+      background: var(--gray-700);
+      border: 1px solid var(--gray-700);
+    }
+
+    .service-card {
+      background: var(--dark);
+      padding: 2.4rem 2rem;
+      position: relative;
+      overflow: hidden;
+      transition: background 0.3s;
+    }
+    .service-card::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0;
+      width: 0; height: 2px;
+      background: var(--orange);
+      transition: width 0.4s ease;
+    }
+    .service-card:hover { background: var(--gray-900); }
+    .service-card:hover::after { width: 100%; }
+
+    .service-num {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 3rem;
+      color: rgba(247,91,0,0.15);
+      line-height: 1;
+      margin-bottom: 1.2rem;
+      transition: color 0.3s;
+    }
+    .service-card:hover .service-num { color: rgba(247,91,0,0.35); }
+
+    .service-title {
+      font-size: 1rem;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      margin-bottom: 0.7rem;
+      color: var(--white);
+    }
+
+    .service-desc {
+      font-size: 0.88rem;
+      color: var(--gray-500);
+      line-height: 1.65;
+    }
+
+    .service-icon {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+      display: block;
+    }
+
+    /* ── STATS BAR ─────────────────────────────── */
+    .stats-bar {
+      background: var(--orange);
+      padding: 2.5rem 6vw;
+      display: flex;
+      justify-content: space-around;
+      flex-wrap: wrap;
+      gap: 2rem;
+    }
+
+    .stat {
+      text-align: center;
+    }
+    .stat-num {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2.8rem;
+      letter-spacing: 0.08em;
+      color: #fff;
+      line-height: 1;
+    }
+    .stat-label {
+      font-size: 0.75rem;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.75);
+      margin-top: 0.3rem;
+    }
+
+    /* ── SOBRE MÍ ───────────────────────────────── */
+    #sobre-mi {
+      background: var(--black);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6rem;
+      align-items: center;
+    }
+
+    .about-visual {
+      position: relative;
+    }
+    .about-frame {
+      width: 100%;
+      aspect-ratio: 4/5;
+      background: var(--gray-900);
+      border: 1px solid var(--gray-700);
+      position: relative;
+      overflow: hidden;
+    }
+    .about-frame::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(135deg, rgba(247,91,0,0.08) 0%, transparent 60%),
+        repeating-linear-gradient(
+          -45deg,
+          transparent,
+          transparent 18px,
+          rgba(247,91,0,0.04) 18px,
+          rgba(247,91,0,0.04) 19px
+        );
+    }
+
+    .about-initials {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 8rem;
+      color: rgba(247,91,0,0.18);
+      letter-spacing: 0.1em;
+    }
+
+    .about-badge {
+      position: absolute;
+      bottom: -1.5rem;
+      right: -1.5rem;
+      width: 110px; height: 110px;
+      background: var(--orange);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .about-badge strong {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2.4rem;
+      line-height: 1;
+      color: #fff;
+    }
+    .about-badge span {
+      font-size: 0.65rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.8);
+      text-align: center;
+    }
+
+    .about-text h2 { margin-bottom: 1.4rem; }
+
+    .about-body {
+      color: var(--gray-300);
+      font-size: 0.97rem;
+      line-height: 1.8;
+      margin-bottom: 1.6rem;
+    }
+
+    .skills-list {
+      list-style: none;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 2.4rem;
+    }
+    .skills-list li {
+      font-size: 0.73rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      border: 1px solid var(--gray-700);
+      padding: 0.3rem 0.8rem;
+      color: var(--gray-300);
+      border-radius: 2px;
+      transition: all 0.2s;
+    }
+    .skills-list li:hover {
+      border-color: var(--orange);
+      color: var(--orange);
+    }
+
+    /* ── CONTACTO ───────────────────────────────── */
+    #contacto {
+      background: var(--dark);
+    }
+
+    .contact-wrapper {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6rem;
+      align-items: start;
+    }
+
+    .contact-info { }
+    .contact-info h2 { margin-bottom: 1.2rem; }
+    .contact-info .section-desc { margin-bottom: 2.4rem; }
+
+    .contact-channels {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .channel {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem 1.2rem;
+      border: 1px solid var(--gray-700);
+      text-decoration: none;
+      color: var(--gray-300);
+      transition: all 0.2s;
+      border-radius: 2px;
+    }
+    .channel:hover {
+      border-color: var(--orange);
+      color: var(--white);
+    }
+    .channel-icon {
+      font-size: 1.3rem;
+      color: var(--orange);
+      min-width: 1.8rem;
+    }
+    .channel-label {
+      font-size: 0.7rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--gray-500);
+      display: block;
+    }
+    .channel-value {
+      font-size: 0.9rem;
+      font-weight: 400;
+    }
+
+    /* FORM */
+    .contact-form {
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+    .field label {
+      font-size: 0.7rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--gray-500);
+    }
+    .field input,
+    .field textarea,
+    .field select {
+      background: var(--gray-900);
+      border: 1px solid var(--gray-700);
+      color: var(--white);
+      padding: 0.8rem 1rem;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 300;
+      border-radius: 2px;
+      outline: none;
+      transition: border-color 0.2s;
+      -webkit-appearance: none;
+    }
+    .field input:focus,
+    .field textarea:focus,
+    .field select:focus {
+      border-color: var(--orange);
+    }
+    .field textarea { resize: vertical; min-height: 120px; }
+    .field select option { background: var(--gray-900); }
+
+    .form-note {
+      font-size: 0.78rem;
+      color: var(--gray-500);
+    }
+
+    /* ── FOOTER ─────────────────────────────────── */
+    footer {
+      background: var(--black);
+      border-top: 1px solid var(--gray-900);
+      padding: 2.4rem 6vw;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .footer-logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.3rem;
+      letter-spacing: 0.12em;
+      color: var(--gray-500);
+    }
+    .footer-logo span { color: var(--orange); }
+
+    .footer-copy {
+      font-size: 0.78rem;
+      color: var(--gray-500);
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 1.6rem;
+      list-style: none;
+    }
+    .footer-links a {
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--gray-500);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .footer-links a:hover { color: var(--orange); }
+
+    /* ── CURSOR DOT ─────────────────────────────── */
+    .cursor-dot {
+      width: 8px; height: 8px;
+      background: var(--orange);
+      border-radius: 50%;
+      position: fixed;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: transform 0.1s, width 0.2s, height 0.2s;
+      mix-blend-mode: screen;
+    }
+    .cursor-ring {
+      width: 32px; height: 32px;
+      border: 1px solid rgba(247,91,0,0.5);
+      border-radius: 50%;
+      position: fixed;
+      pointer-events: none;
+      z-index: 9998;
+      transform: translate(-50%, -50%);
+      transition: transform 0.18s ease, width 0.25s, height 0.25s;
+    }
+    body:hover .cursor-dot { opacity: 1; }
+
+    /* ── RESPONSIVE ─────────────────────────────── */
+    @media (max-width: 768px) {
+      nav { padding: 1.2rem 5vw; }
+      .nav-links { gap: 1.2rem; }
+
+      section { padding: 5rem 5vw; }
+
+      #sobre-mi {
+        grid-template-columns: 1fr;
+        gap: 3rem;
+      }
+      .about-frame { aspect-ratio: 3/2; }
+      .about-badge { right: 0; bottom: -1rem; }
+
+      .contact-wrapper {
+        grid-template-columns: 1fr;
+        gap: 3rem;
+      }
+
+      .form-row { grid-template-columns: 1fr; }
+
+      footer {
+        flex-direction: column;
+        text-align: center;
+      }
+      .footer-links { justify-content: center; }
+    }
+
+    @media (max-width: 520px) {
+      .nav-links { display: none; }
+      h1 { font-size: clamp(3rem, 14vw, 5rem); }
+    }
+
+    /* ── SCROLL ANIMATIONS ──────────────────────── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Cursor -->
+  <div class="cursor-dot" id="dot"></div>
+  <div class="cursor-ring" id="ring"></div>
+
+  <!-- NAV -->
+  <nav>
+    <a href="#hero" class="nav-logo">Zona<span>Mao</span></a>
+    <ul class="nav-links">
+      <li><a href="#servicios">Servicios</a></li>
+      <li><a href="#sobre-mi">Sobre mí</a></li>
+      <li><a href="#contacto">Contacto</a></li>
+    </ul>
+    <a href="#contacto" class="btn btn-primary" style="padding:0.6rem 1.4rem; font-size:0.75rem;">Hablemos →</a>
+  </nav>
+
+  <!-- HERO -->
+  <section id="hero">
+    <div class="hero-inner">
+      <span class="hero-tag">Marketing Digital · Estrategia · Resultados</span>
+      <h1>Zona<br><span class="accent">Mao</span><br>Digital</h1>
+      <p class="hero-sub">Estrategias de marketing digital que convierten audiencias en clientes reales. Sin ruido, sin genéricos — solo resultados.</p>
+      <div class="hero-ctas">
+        <a href="#servicios" class="btn btn-primary">Ver servicios →</a>
+        <a href="#sobre-mi" class="btn btn-ghost">Conoce mi historia</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <div class="stats-bar">
+    <div class="stat reveal">
+      <div class="stat-num">+120</div>
+      <div class="stat-label">Proyectos completados</div>
+    </div>
+    <div class="stat reveal">
+      <div class="stat-num">6+</div>
+      <div class="stat-label">Años de experiencia</div>
+    </div>
+    <div class="stat reveal">
+      <div class="stat-num">340%</div>
+      <div class="stat-label">ROI promedio logrado</div>
+    </div>
+    <div class="stat reveal">
+      <div class="stat-num">98%</div>
+      <div class="stat-label">Clientes satisfechos</div>
+    </div>
+  </div>
+
+  <!-- SERVICIOS -->
+  <section id="servicios">
+    <div class="services-header reveal">
+      <div>
+        <p class="section-label">Lo que hago</p>
+        <h2>Servicios</h2>
+      </div>
+      <p class="section-desc">Cada servicio está diseñado para atacar el punto exacto donde tu negocio necesita crecer.</p>
+    </div>
+
+    <div class="services-grid">
+      <div class="service-card reveal">
+        <div class="service-num">01</div>
+        <span class="service-icon">⚡</span>
+        <h3 class="service-title">Estrategia Digital</h3>
+        <p class="service-desc">Diagnóstico completo de tu presencia digital y construcción de un mapa de ruta enfocado en conversiones reales, no en vanity metrics.</p>
+      </div>
+      <div class="service-card reveal">
+        <div class="service-num">02</div>
+        <span class="service-icon">🎯</span>
+        <h3 class="service-title">Publicidad de Pago</h3>
+        <p class="service-desc">Gestión de campañas en Meta Ads y Google Ads con optimización continua. Tu presupuesto trabaja, no duerme.</p>
+      </div>
+      <div class="service-card reveal">
+        <div class="service-num">03</div>
+        <span class="service-icon">✍️</span>
+        <h3 class="service-title">Copy & Contenido</h3>
+        <p class="service-desc">Textos que venden. Desde emails fríos hasta guiones de video — mensajes que resuenen con tu audiencia ideal.</p>
+      </div>
+      <div class="service-card reveal">
+        <div class="service-num">04</div>
+        <span class="service-icon">📈</span>
+        <h3 class="service-title">SEO & Posicionamiento</h3>
+        <p class="service-desc">Visibilidad orgánica de largo plazo. Auditorías técnicas, contenido estratégico y construcción de autoridad de dominio.</p>
+      </div>
+      <div class="service-card reveal">
+        <div class="service-num">05</div>
+        <span class="service-icon">🔧</span>
+        <h3 class="service-title">Automatización & Embudos</h3>
+        <p class="service-desc">Sistemas de captación que trabajan 24/7. Landing pages, secuencias de email y CRM para escalar sin perder el toque humano.</p>
+      </div>
+      <div class="service-card reveal">
+        <div class="service-num">06</div>
+        <span class="service-icon">📊</span>
+        <h3 class="service-title">Analytics & Reportes</h3>
+        <p class="service-desc">Decisiones basadas en datos reales. Dashboards personalizados, atribución correcta y reporting mensual sin tecnicismos innecesarios.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SOBRE MÍ -->
+  <section id="sobre-mi">
+    <div class="about-visual reveal">
+      <div class="about-frame">
+        <div class="about-initials">ZM</div>
+      </div>
+      <div class="about-badge">
+        <strong>6+</strong>
+        <span>Años en<br>el campo</span>
+      </div>
+    </div>
+    <div class="about-text reveal">
+      <p class="section-label">Quién está detrás</p>
+      <h2>Sobre<br>mí</h2>
+      <p class="about-body">
+        Soy un especialista en marketing digital con más de 6 años construyendo estrategias que conectan marcas con las personas correctas en el momento correcto. He trabajado con startups, pymes y marcas establecidas en Colombia y Latinoamérica, ayudándoles a escalar su presencia digital con metodología, datos y creatividad estratégica.
+      </p>
+      <p class="about-body">
+        Mi enfoque combina pensamiento analítico con narrativa de marca — porque los números sin historia no venden, y las historias sin datos no escalan. Si buscas a alguien que entienda tanto el funnel de conversión como la psicología del comprador, estás en el lugar correcto.
+      </p>
+      <ul class="skills-list">
+        <li>Meta Ads</li>
+        <li>Google Ads</li>
+        <li>SEO</li>
+        <li>Email Marketing</li>
+        <li>Copywriting</li>
+        <li>Growth Hacking</li>
+        <li>HubSpot</li>
+        <li>Analytics</li>
+      </ul>
+      <a href="#contacto" class="btn btn-primary">Trabajemos juntos →</a>
+    </div>
+  </section>
+
+  <!-- CONTACTO -->
+  <section id="contacto">
+    <div class="contact-wrapper">
+      <div class="contact-info reveal">
+        <p class="section-label">Hablemos</p>
+        <h2>Contacto</h2>
+        <p class="section-desc">¿Listo para llevar tu marca al siguiente nivel? Cuéntame tu proyecto y te respondo en menos de 24 horas.</p>
+
+        <div class="contact-channels" style="margin-top:2rem;">
+          <a href="mailto:hola@zonamaodigital.com" class="channel">
+            <span class="channel-icon">✉</span>
+            <div>
+              <span class="channel-label">Email</span>
+              <span class="channel-value">hola@zonamaodigital.com</span>
+            </div>
+          </a>
+          <a href="https://wa.me/573000000000" target="_blank" class="channel">
+            <span class="channel-icon">💬</span>
+            <div>
+              <span class="channel-label">WhatsApp</span>
+              <span class="channel-value">+57 300 000 0000</span>
+            </div>
+          </a>
+          <a href="https://linkedin.com" target="_blank" class="channel">
+            <span class="channel-icon">in</span>
+            <div>
+              <span class="channel-label">LinkedIn</span>
+              <span class="channel-value">/in/zonamaodigital</span>
+            </div>
+          </a>
+        </div>
+      </div>
+
+      <form class="contact-form reveal" onsubmit="handleSubmit(event)">
+        <div class="form-row">
+          <div class="field">
+            <label for="nombre">Nombre</label>
+            <input id="nombre" type="text" placeholder="Tu nombre" />
+          </div>
+          <div class="field">
+            <label for="email">Email</label>
+            <input id="email" type="email" placeholder="tu@email.com" />
+          </div>
+        </div>
+        <div class="field">
+          <label for="servicio">Servicio de interés</label>
+          <select id="servicio">
+            <option value="" disabled selected>Selecciona una opción</option>
+            <option>Estrategia Digital</option>
+            <option>Publicidad de Pago</option>
+            <option>Copy & Contenido</option>
+            <option>SEO & Posicionamiento</option>
+            <option>Automatización & Embudos</option>
+            <option>Analytics & Reportes</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="mensaje">Cuéntame tu proyecto</label>
+          <textarea id="mensaje" placeholder="¿Qué quieres lograr? Mientras más detalles, mejor."></textarea>
+        </div>
+        <p class="form-note">🔒 Tus datos están seguros. No spam, nunca.</p>
+        <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;">
+          Enviar mensaje →
+        </button>
+      </form>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-logo">Zona<span>Mao</span> Digital</div>
+    <p class="footer-copy">© 2025 Zona Mao Digital. Todos los derechos reservados.</p>
+    <ul class="footer-links">
+      <li><a href="#servicios">Servicios</a></li>
+      <li><a href="#sobre-mi">Sobre mí</a></li>
+      <li><a href="#contacto">Contacto</a></li>
+    </ul>
+  </footer>
+
+  <script>
+    // Custom cursor
+    const dot  = document.getElementById('dot');
+    const ring = document.getElementById('ring');
+    document.addEventListener('mousemove', e => {
+      dot.style.left  = e.clientX + 'px';
+      dot.style.top   = e.clientY + 'px';
+      ring.style.left = e.clientX + 'px';
+      ring.style.top  = e.clientY + 'px';
+    });
+    document.querySelectorAll('a, button, .service-card').forEach(el => {
+      el.addEventListener('mouseenter', () => {
+        dot.style.width  = '14px';
+        dot.style.height = '14px';
+        ring.style.width  = '48px';
+        ring.style.height = '48px';
+      });
+      el.addEventListener('mouseleave', () => {
+        dot.style.width  = '8px';
+        dot.style.height = '8px';
+        ring.style.width  = '32px';
+        ring.style.height = '32px';
+      });
+    });
+
+    // Scroll reveal
+    const reveals = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach((entry, i) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => entry.target.classList.add('visible'), i * 80);
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12 });
+    reveals.forEach(el => observer.observe(el));
+
+    // Form submit
+    function handleSubmit(e) {
+      e.preventDefault();
+      const btn = e.target.querySelector('button[type="submit"]');
+      btn.textContent = '✓ Mensaje enviado';
+      btn.style.background = '#2e7d32';
+      setTimeout(() => {
+        btn.textContent = 'Enviar mensaje →';
+        btn.style.background = '';
+        e.target.reset();
+      }, 3000);
+    }
+  </script>
+</body>
+</html>
